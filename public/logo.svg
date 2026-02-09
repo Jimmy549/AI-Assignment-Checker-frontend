@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="36" viewBox="0 0 120 36" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AI Assignment Checker logo">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+  </defs>
+  <rect width="36" height="36" rx="6" fill="url(#g)" />
+  <text x="18" y="23" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="#fff">AI</text>
+  <text x="52" y="22" font-family="Inter, Arial, sans-serif" font-size="14" fill="#111827">Assignment Checker</text>
+</svg>
