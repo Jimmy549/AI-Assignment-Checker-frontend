@@ -65,7 +65,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full">
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 transform transition-transform duration-500 hover:scale-105">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             AI Assignment Checker
           </h1>
@@ -74,7 +74,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <div className="card">
+        <div className="card hover:shadow-2xl transition-all duration-300">
           <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
               <div>
@@ -114,7 +114,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full"
+              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-xl transition-all duration-300"
             >
               {loading ? 'Please wait...' : isLogin ? 'Sign In' : 'Sign Up'}
             </button>
@@ -123,7 +123,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-blue-600 hover:text-blue-800"
+              className="text-blue-600 hover:text-blue-800 hover:underline transition-all duration-300 font-medium hover:scale-105 inline-block"
             >
               {isLogin
                 ? "Don't have an account? Sign up"

@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-gray-50">
+      <body className="bg-gray-50" suppressHydrationWarning>
         <ErrorBoundary>
           <Toaster position="top-right" reverseOrder={false} />
           <header className="bg-white border-b">

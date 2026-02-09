@@ -99,7 +99,7 @@ export default function UploadSubmissionsPage() {
       <div className="container mx-auto px-4 max-w-2xl">
         <button
           onClick={() => router.back()}
-          className="text-blue-600 hover:text-blue-800 mb-6"
+          className="text-blue-600 hover:text-blue-800 hover:underline mb-6 transition-all duration-200 inline-flex items-center gap-1"
         >
           ← Back
         </button>
@@ -108,7 +108,7 @@ export default function UploadSubmissionsPage() {
           <h1 className="text-3xl font-bold mb-2">Upload Submissions</h1>
           <p className="text-gray-600 mb-8">
             Upload student assignment PDFs in bulk. Filenames should follow the format:
-            <code className="bg-gray-100 px-2 py-1 rounded ml-1">StudentName_RollNumber.pdf</code>
+            <code className="bg-gray-100 px-2 py-1 rounded ml-1 font-mono text-sm">StudentName_RollNumber.pdf</code>
           </p>
 
           {/* Drop Zone */}
@@ -116,7 +116,7 @@ export default function UploadSubmissionsPage() {
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-blue-300 rounded-lg p-12 text-center cursor-pointer hover:bg-blue-50 transition"
+            className="border-2 border-dashed border-blue-300 rounded-lg p-12 text-center cursor-pointer transition-all duration-300 hover:bg-blue-50 hover:border-blue-500 hover:shadow-lg hover:scale-102"
           >
             <input
               ref={fileInputRef}
@@ -126,8 +126,8 @@ export default function UploadSubmissionsPage() {
               onChange={handleFileSelect}
               hidden
             />
-            <div className="text-5xl mb-4">📄</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <div className="text-5xl mb-4 transition-transform duration-300 group-hover:scale-110">📄</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2 transition-colors duration-200">
               Drop PDFs here or click to select
             </h3>
             <p className="text-gray-600">Maximum 100 files, 10MB each</p>
@@ -143,7 +143,7 @@ export default function UploadSubmissionsPage() {
                 {files.map((file, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between bg-gray-50 p-4 rounded-lg"
+                    className="flex items-center justify-between bg-gray-50 p-4 rounded-lg transition-all duration-300 hover:bg-blue-50 hover:shadow-md hover:scale-102 hover:-translate-y-1"
                   >
                     <div className="flex items-center flex-1">
                       <span className="text-2xl mr-3">📑</span>
@@ -156,7 +156,7 @@ export default function UploadSubmissionsPage() {
                     </div>
                     <button
                       onClick={() => handleRemoveFile(index)}
-                      className="text-red-600 hover:text-red-800 font-bold"
+                      className="text-red-600 hover:text-red-800 hover:scale-125 hover:bg-red-100 w-8 h-8 rounded-full transition-all duration-300 flex items-center justify-center font-bold"
                       disabled={loading}
                     >
                       ✕
@@ -201,7 +201,7 @@ export default function UploadSubmissionsPage() {
           </div>
 
           {/* Info Box */}
-          <div className="mt-8 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+          <div className="mt-8 p-4 bg-blue-50 border-l-4 border-blue-500 rounded transition-all duration-300 hover:shadow-md hover:bg-blue-100 hover:border-l-8">
             <p className="text-sm text-gray-700">
               <strong>💡 Tip:</strong> PDFs will be automatically evaluated using AI.
               You can track progress from the assignment page.

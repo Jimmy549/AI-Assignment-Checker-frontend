@@ -63,6 +63,14 @@ export default function DashboardPage() {
   }
 
   const getStatusBadge = (assignment: any) => {
+    const status = assignment.status || 'draft';
+    const statusColors: Record<string, string> = {
+      draft: 'bg-gray-100 text-gray-800',
+      active: 'bg-green-100 text-green-800',
+      closed: 'bg-red-100 text-red-800',
+      archived: 'bg-purple-100 text-purple-800',
+    };
+
     if (assignment.isProcessing) {
       return (
         <span className="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
@@ -74,9 +82,14 @@ export default function DashboardPage() {
       .length || 0;
     const total = assignment.submissions?.length || 0;
     return (
-      <span className="px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
-        {evaluated}/{total} Evaluated
-      </span>
+      <div className="flex flex-col gap-1">
+        <span className={`px-3 py-1 text-xs font-medium rounded-full ${statusColors[status] || statusColors.draft}`}>
+          {status.toUpperCase()}
+        </span>
+        <span className="px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+          {evaluated}/{total} Evaluated
+        </span>
+      </div>
     );
   };
 
@@ -95,9 +108,9 @@ export default function DashboardPage() {
           </div>
           <div className="flex gap-2">
             <Link href="/assignments/new">
-              <button className="btn-primary">+ New Assignment</button>
+              <button className="btn-primary shadow-lg hover:shadow-xl hover:scale-105">+ New Assignment</button>
             </Link>
-            <button onClick={handleLogout} className="btn-outline">
+            <button onClick={handleLogout} className="btn-outline hover:border-red-400 hover:text-red-600 hover:bg-red-50">
               Logout
             </button>
           </div>
@@ -105,28 +118,30 @@ export default function DashboardPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="card">
-            <div className="text-gray-600 text-sm font-medium">
+          <div className="card-interactive group hover:border-2 hover:border-blue-200">
+            <div className="text-gray-600 text-sm font-medium group-hover:text-blue-600 transition-colors">
               Total Assignments
             </div>
-            <div className="text-3xl font-bold text-blue-600 mt-2">
+            <div className="text-3xl font-bold text-blue-600 mt-2 group-hover:scale-110 transition-transform duration-300">
               {assignments.length}
             </div>
           </div>
-          <div className="card">
-            <div className="text-gray-600 text-sm font-medium">
+          <div className="card-interactive group hover:border-2 hover:border-green-200">
+            <div className="text-gray-600 text-sm font-medium group-hover:text-green-600 transition-colors">
               Total Submissions
             </div>
-            <div className="text-3xl font-bold text-green-600 mt-2">
+            <div className="text-3xl font-bold text-green-600 mt-2 group-hover:scale-110 transition-transform duration-300">
               {assignments.reduce(
                 (acc, a) => acc + (a.submissions?.length || 0),
                 0,
               )}
             </div>
           </div>
-          <div className="card">
-            <div className="text-gray-600 text-sm font-medium">Evaluated</div>
-            <div className="text-3xl font-bold text-purple-600 mt-2">
+          <div className="card-interactive group hover:border-2 hover:border-purple-200">
+            <div className="text-gray-600 text-sm font-medium group-hover:text-purple-600 transition-colors">
+              Evaluated
+            </div>
+            <div className="text-3xl font-bold text-purple-600 mt-2 group-hover:scale-110 transition-transform duration-300">
               {assignments.reduce(
                 (acc, a) =>
                   acc + (a.submissions?.filter((s: any) => s.isEvaluated).length || 0),
@@ -180,13 +195,13 @@ export default function DashboardPage() {
                   {assignments.map((assignment) => (
                     <tr
                       key={assignment.id}
-                      className="border-b border-gray-200 hover:bg-gray-50"
+                      className="border-b border-gray-200 transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:shadow-lg hover:scale-[1.01] cursor-pointer"
                     >
-                      <td className="px-6 py-4 font-medium text-gray-900">
+                      <td className="px-6 py-4 font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
                         {assignment.title}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
-                        <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-xs font-medium">
+                        <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-xs font-medium transition-all duration-300 hover:bg-indigo-200 hover:shadow-md hover:scale-105 inline-block">
                           {assignment.markingMode.toUpperCase()}
                         </span>
                       </td>
@@ -197,12 +212,12 @@ export default function DashboardPage() {
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
                           <Link href={`/assignments/${assignment.id}`}>
-                            <button className="btn-outline text-xs">
+                            <button className="btn-outline text-xs hover:scale-110 hover:shadow-md transition-all duration-300">
                               View
                             </button>
                           </Link>
                           <Link href={`/submissions/upload/${assignment.id}`}>
-                            <button className="btn-primary text-xs">
+                            <button className="btn-primary text-xs hover:scale-110 hover:shadow-lg transition-all duration-300">
                               Upload
                             </button>
                           </Link>

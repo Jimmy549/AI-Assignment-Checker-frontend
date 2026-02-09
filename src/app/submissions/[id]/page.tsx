@@ -130,7 +130,7 @@ export default function SubmissionDetailsPage() {
           ← Back
         </button>
 
-        <div className="card mb-6">
+        <div className="card mb-6 hover:shadow-2xl transition-all duration-300">
           <div className="flex justify-between items-start mb-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
@@ -190,20 +190,20 @@ export default function SubmissionDetailsPage() {
               <div className="flex border-b border-gray-200 mb-6">
                 <button
                   onClick={() => setActiveTab('feedback')}
-                  className={`px-6 py-3 font-medium border-b-2 transition ${
+                  className={`px-6 py-3 font-medium border-b-2 transition-all duration-300 ${
                     activeTab === 'feedback'
-                      ? 'border-blue-600 text-blue-600'
-                      : 'border-transparent text-gray-600'
+                      ? 'border-blue-600 text-blue-600 scale-105'
+                      : 'border-transparent text-gray-600 hover:text-blue-500 hover:border-blue-300'
                   }`}
                 >
                   AI Feedback
                 </button>
                 <button
                   onClick={() => setActiveTab('content')}
-                  className={`px-6 py-3 font-medium border-b-2 transition ${
+                  className={`px-6 py-3 font-medium border-b-2 transition-all duration-300 ${
                     activeTab === 'content'
-                      ? 'border-blue-600 text-blue-600'
-                      : 'border-transparent text-gray-600'
+                      ? 'border-blue-600 text-blue-600 scale-105'
+                      : 'border-transparent text-gray-600 hover:text-blue-500 hover:border-blue-300'
                   }`}
                 >
                   Submission Content
@@ -223,7 +223,7 @@ export default function SubmissionDetailsPage() {
 
                   {/* Detailed Feedback */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-blue-50 p-4 rounded-lg">
+                    <div className="bg-blue-50 p-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-blue-100">
                       <h4 className="font-semibold text-blue-900 mb-2">
                         📍 Topic Relevance
                       </h4>
@@ -232,7 +232,7 @@ export default function SubmissionDetailsPage() {
                       </p>
                     </div>
 
-                    <div className="bg-green-50 p-4 rounded-lg">
+                    <div className="bg-green-50 p-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-green-100">
                       <h4 className="font-semibold text-green-900 mb-2">
                         📋 Structure
                       </h4>
@@ -241,7 +241,7 @@ export default function SubmissionDetailsPage() {
                       </p>
                     </div>
 
-                    <div className="bg-purple-50 p-4 rounded-lg">
+                    <div className="bg-purple-50 p-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-purple-100">
                       <h4 className="font-semibold text-purple-900 mb-2">
                         ⭐ Content Quality
                       </h4>
@@ -250,7 +250,7 @@ export default function SubmissionDetailsPage() {
                       </p>
                     </div>
 
-                    <div className="bg-orange-50 p-4 rounded-lg">
+                    <div className="bg-orange-50 p-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-orange-100">
                       <h4 className="font-semibold text-orange-900 mb-2">
                         📊 Word Count
                       </h4>

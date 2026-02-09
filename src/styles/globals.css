@@ -21,35 +21,192 @@ a {
 }
 
 @layer components {
+  /* Professional Button Styles with Hover Effects */
   .btn {
-    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-300 ease-in-out;
+    @apply active:scale-95 transform;
   }
 
   .btn-primary {
-    @apply btn bg-blue-500 text-white hover:bg-blue-600;
+    @apply btn bg-gradient-to-r from-blue-500 to-blue-600 text-white;
+    @apply hover:from-blue-600 hover:to-blue-700 hover:shadow-xl hover:-translate-y-1;
+    @apply hover:shadow-blue-500/40;
   }
 
   .btn-secondary {
-    @apply btn bg-green-500 text-white hover:bg-green-600;
+    @apply btn bg-gradient-to-r from-green-500 to-green-600 text-white;
+    @apply hover:from-green-600 hover:to-green-700 hover:shadow-xl hover:-translate-y-1;
+    @apply hover:shadow-green-500/40;
   }
 
   .btn-danger {
-    @apply btn bg-red-500 text-white hover:bg-red-600;
+    @apply btn bg-gradient-to-r from-red-500 to-red-600 text-white;
+    @apply hover:from-red-600 hover:to-red-700 hover:shadow-xl hover:-translate-y-1;
+    @apply hover:shadow-red-500/40;
   }
 
   .btn-outline {
-    @apply btn border-2 border-gray-300 hover:bg-gray-100;
+    @apply btn border-2 border-gray-300 text-gray-700 bg-white;
+    @apply hover:border-blue-400 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50;
+    @apply hover:shadow-lg hover:-translate-y-1 hover:text-blue-700;
   }
 
+  /* Professional Card Styles with Hover Effects */
   .card {
-    @apply bg-white rounded-lg shadow-md p-6;
+    @apply bg-white rounded-xl shadow-lg p-6 border border-gray-100;
+    @apply transition-all duration-300 ease-in-out transform;
+    @apply hover:shadow-2xl hover:-translate-y-2 hover:border-blue-200;
   }
 
+  .card-interactive {
+    @apply card cursor-pointer;
+    @apply hover:shadow-2xl hover:-translate-y-3 hover:scale-[1.02];
+  }
+
+  /* Link Styles with Hover Effects */
+  a:not(.no-hover) {
+    @apply transition-colors duration-200;
+  }
+
+  /* Form Input Styles with Enhanced Focus */
   .form-input {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500;
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg;
+    @apply transition-all duration-300 ease-in-out;
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+    @apply focus:shadow-lg focus:shadow-blue-500/20;
+    @apply hover:border-gray-400;
   }
 
   .form-label {
     @apply block text-sm font-medium text-gray-700 mb-2;
+    @apply transition-colors duration-200;
+  }
+
+  /* Table Row Hover Effects */
+  tbody tr {
+    @apply transition-all duration-300 ease-in-out transform;
+  }
+
+  tbody tr:hover {
+    @apply bg-gradient-to-r from-blue-50 to-indigo-50 shadow-md scale-[1.01];
+  }
+
+  tbody tr:hover td {
+    @apply text-gray-900 font-medium;
+  }
+
+  /* Badge Hover Effects */
+  .badge {
+    @apply px-3 py-1 rounded-full text-xs font-medium;
+    @apply transition-all duration-300 transform;
+    @apply hover:shadow-lg hover:-translate-y-1 hover:scale-110;
+  }
+
+  /* Navigation Link Hover Effects */
+  nav a {
+    @apply relative transition-colors duration-300;
+    @apply hover:text-blue-600;
+  }
+
+  nav a::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600;
+    @apply transition-all duration-300;
+  }
+
+  nav a:hover::after {
+    @apply w-full;
+  }
+
+  /* Modal/Dialog Overlay Effects */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300;
+  }
+
+  .modal-content {
+    @apply bg-white rounded-lg shadow-2xl transition-all duration-300;
+    @apply scale-100 opacity-100;
+  }
+
+  /* Input Focus with Color Animation */
+  .form-input:focus {
+    @apply border-transparent scale-[1.02];
+  }
+
+  /* Smooth Transitions for Color Changes */
+  button, a, input, select, textarea {
+    @apply transition-all duration-300;
+  }
+
+  /* Tooltip Hover Effects */
+  .tooltip {
+    @apply relative;
+  }
+
+  .tooltip::before {
+    content: attr(data-tooltip);
+    @apply absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-3 py-2 rounded text-sm;
+    @apply opacity-0 pointer-events-none transition-opacity duration-300 whitespace-nowrap;
+    @apply z-50;
+  }
+
+  .tooltip:hover::before {
+    @apply opacity-100;
+  }
+
+  /* Smooth Scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Professional Gradient Hover for Links */
+  .link-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-blue-600 bg-size-200 bg-pos-0;
+    @apply transition-all duration-300;
+    @apply hover:bg-pos-100;
+  }
+
+  /* Icon Button Hover Effects */
+  .icon-btn {
+    @apply inline-flex items-center justify-center p-2 rounded-lg;
+    @apply transition-all duration-300 transform;
+    @apply hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50;
+    @apply hover:scale-125 hover:shadow-md;
+  }
+
+  .icon-btn:hover {
+    @apply text-blue-600;
+  }
+
+  /* Pulse Animation for Loading States */
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+    50% {
+      opacity: 0.8;
+      box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Shimmer Effect for Loading Cards */
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .shimmer {
+    background: linear-gradient(to right, #f3f4f6 0%, #e5e7eb 20%, #f3f4f6 40%, #f3f4f6 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s linear infinite;
   }
 }

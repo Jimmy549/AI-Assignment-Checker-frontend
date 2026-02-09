@@ -39,6 +39,8 @@ interface Assignment {
   passPercentage: number;
   isProcessing: boolean;
   createdAt?: string;
+  status?: string;
+  deadline?: string;
   submissions: Submission[];
 }
 
@@ -53,6 +55,10 @@ export default function AssignmentDetailsPage() {
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState<any[]>([]);
+  const [deletingAssignment, setDeletingAssignment] = useState(false);
+  const [changingStatus, setChangingStatus] = useState(false);
+  const [reEvaluating, setReEvaluating] = useState<string | null>(null);
+  const [bulkReEvaluating, setBulkReEvaluating] = useState(false);
   
   // Edit Modal State
   const [editingSubmission, setEditingSubmission] = useState<Submission | null>(null);
@@ -135,6 +141,64 @@ export default function AssignmentDetailsPage() {
       link.parentNode?.removeChild(link);
     } catch (error) {
       console.error('Excel export failed:', error);
+    }
+  };
+
+  const handleDeleteAssignment = async () => {
+    if (!confirm('Are you sure you want to delete this assignment? This action cannot be undone.')) return;
+    setDeletingAssignment(true);
+    try {
+      await apiClient.delete(`/assignments/${assignmentId}`);
+      alert('Assignment deleted successfully');
+      window.location.href = '/dashboard';
+    } catch (error) {
+      console.error('Delete failed:', error);
+      alert('Failed to delete assignment');
+    } finally {
+      setDeletingAssignment(false);
+    }
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    setChangingStatus(true);
+    try {
+      await apiClient.patch(`/assignments/${assignmentId}/status`, { status: newStatus });
+      await fetchAssignment();
+    } catch (error) {
+      console.error('Status change failed:', error);
+      alert('Failed to change status');
+    } finally {
+      setChangingStatus(false);
+    }
+  };
+
+  const handleReEvaluate = async (submissionId: string) => {
+    if (!confirm('Re-evaluate this submission?')) return;
+    setReEvaluating(submissionId);
+    try {
+      await apiClient.post(`/evaluations/re-evaluate/${submissionId}`);
+      await fetchAssignment();
+      alert('Re-evaluation completed');
+    } catch (error) {
+      console.error('Re-evaluation failed:', error);
+      alert('Failed to re-evaluate');
+    } finally {
+      setReEvaluating(null);
+    }
+  };
+
+  const handleBulkReEvaluate = async () => {
+    if (!confirm('Re-evaluate all submissions? This may take a while.')) return;
+    setBulkReEvaluating(true);
+    try {
+      const response = await apiClient.post(`/assignments/${assignmentId}/re-evaluate-all`);
+      alert(response.data.message);
+      await fetchAssignment();
+    } catch (error) {
+      console.error('Bulk re-evaluation failed:', error);
+      alert('Failed to re-evaluate');
+    } finally {
+      setBulkReEvaluating(false);
     }
   };
 
@@ -222,32 +286,38 @@ export default function AssignmentDetailsPage() {
           </div>
           <div className="flex gap-2">
             <Link href={`/submissions/upload/${assignmentId}`}>
-              <button className="btn-primary">+ Upload Submissions</button>
+              <button className="btn-primary hover:scale-105 hover:shadow-xl transition-all duration-300">+ Upload Submissions</button>
             </Link>
-            <button onClick={handleExport} className="btn-secondary" disabled={evaluatedCount === 0}>
+            <button onClick={handleExport} className="btn-secondary hover:scale-105 hover:shadow-xl transition-all duration-300" disabled={evaluatedCount === 0}>
               📥 CSV
             </button>
-            <button onClick={handleExportExcel} className="btn-secondary" disabled={evaluatedCount === 0}>
+            <button onClick={handleExportExcel} className="btn-secondary hover:scale-105 hover:shadow-xl transition-all duration-300" disabled={evaluatedCount === 0}>
               📊 Excel
+            </button>
+            <button onClick={handleBulkReEvaluate} className="btn-secondary hover:scale-105 hover:shadow-xl transition-all duration-300" disabled={bulkReEvaluating || totalSubmissions === 0}>
+              {bulkReEvaluating ? '⏳ Re-evaluating...' : '🔄 Re-evaluate All'}
+            </button>
+            <button onClick={handleDeleteAssignment} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-red-500/30" disabled={deletingAssignment}>
+              {deletingAssignment ? 'Deleting...' : '🗑️ Delete'}
             </button>
           </div>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="card">
+          <div className="card hover:shadow-2xl hover:-translate-y-2 hover:border-2 hover:border-blue-200 transition-all duration-300">
             <p className="text-gray-600 text-sm">Total Submissions</p>
             <p className="text-3xl font-bold text-blue-600 mt-2">{totalSubmissions}</p>
           </div>
-          <div className="card">
+          <div className="card hover:shadow-2xl hover:-translate-y-2 hover:border-2 hover:border-green-200 transition-all duration-300">
             <p className="text-gray-600 text-sm">Evaluated</p>
             <p className="text-3xl font-bold text-green-600 mt-2">{evaluatedCount}</p>
           </div>
-          <div className="card">
+          <div className="card hover:shadow-2xl hover:-translate-y-2 hover:border-2 hover:border-purple-200 transition-all duration-300">
             <p className="text-gray-600 text-sm">Passed</p>
             <p className="text-3xl font-bold text-purple-600 mt-2">{passedCount}</p>
           </div>
-          <div className="card">
+          <div className="card hover:shadow-2xl hover:-translate-y-2 hover:border-2 hover:border-orange-200 transition-all duration-300">
             <p className="text-gray-600 text-sm">Pass Rate</p>
             <p className="text-3xl font-bold text-orange-600 mt-2">
               {evaluatedCount > 0 ? Math.round((passedCount / evaluatedCount) * 100) : 0}%
@@ -289,6 +359,20 @@ export default function AssignmentDetailsPage() {
             <h2 className="text-xl font-bold mb-4">Settings</h2>
             <div className="space-y-3 text-sm">
               <div>
+                <p className="text-gray-600">Status</p>
+                <select
+                  value={assignment.status || 'draft'}
+                  onChange={(e) => handleStatusChange(e.target.value)}
+                  disabled={changingStatus}
+                  className="mt-1 form-input text-sm"
+                >
+                  <option value="draft">Draft</option>
+                  <option value="active">Active</option>
+                  <option value="closed">Closed</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </div>
+              <div>
                 <p className="text-gray-600">Marking Mode</p>
                 <p className="font-semibold text-gray-900 capitalize">
                   {assignment.markingMode}
@@ -308,6 +392,14 @@ export default function AssignmentDetailsPage() {
                 <p className="text-gray-600">Min Words</p>
                 <p className="font-semibold text-gray-900">{assignment.minWords}</p>
               </div>
+              {assignment.deadline && (
+                <div>
+                  <p className="text-gray-600">Deadline</p>
+                  <p className="font-semibold text-gray-900">
+                    {format(new Date(assignment.deadline), 'MMM dd, yyyy HH:mm')}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -346,7 +438,7 @@ export default function AssignmentDetailsPage() {
                   {assignment.submissions?.map((submission) => (
                     <tr
                       key={submission.id}
-                      className="border-b border-gray-200 hover:bg-gray-50"
+                      className="border-b border-gray-200 transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:shadow-lg hover:scale-[1.01]"
                     >
                       <td className="px-6 py-4 font-medium">{submission.studentName}</td>
                       <td className="px-6 py-4 text-gray-600">{submission.studentRollNumber}</td>
@@ -354,6 +446,14 @@ export default function AssignmentDetailsPage() {
                         {submission.isEvaluated ? (
                           <span className="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
                             ✓ Evaluated
+                          </span>
+                        ) : submission.submissionStatus === 'unreadable' ? (
+                          <span className="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                            ⚠️ Unreadable
+                          </span>
+                        ) : submission.submissionStatus === 'evaluation_error' ? (
+                          <span className="px-3 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-800">
+                            ❌ Error
                           </span>
                         ) : (
                           <span className="px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">
@@ -391,14 +491,32 @@ export default function AssignmentDetailsPage() {
                       </td>
                       <td className="px-6 py-4 flex gap-2">
                         <Link href={`/submissions/${submission.id}`}>
-                          <button className="btn-outline text-xs">View Details</button>
+                          <button className="btn-outline text-xs hover:scale-110 hover:shadow-md transition-all duration-300">View Details</button>
                         </Link>
                         {submission.evaluation && (
-                          <button 
-                            className="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1 rounded text-xs font-medium transition-colors"
-                            onClick={() => openEditModal(submission)}
+                          <>
+                            <button 
+                              className="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1 rounded text-xs font-medium transition-all duration-300 hover:scale-110 hover:shadow-md"
+                              onClick={() => openEditModal(submission)}
+                            >
+                              Edit Grade
+                            </button>
+                            <button
+                              className="bg-purple-100 text-purple-700 hover:bg-purple-200 px-3 py-1 rounded text-xs font-medium transition-all duration-300 hover:scale-110 hover:shadow-md"
+                              onClick={() => handleReEvaluate(submission.id)}
+                              disabled={reEvaluating === submission.id}
+                            >
+                              {reEvaluating === submission.id ? '⏳' : '🔄'}
+                            </button>
+                          </>
+                        )}
+                        {(submission.submissionStatus === 'unreadable' || submission.submissionStatus === 'evaluation_error') && (
+                          <button
+                            className="bg-orange-100 text-orange-700 hover:bg-orange-200 px-3 py-1 rounded text-xs font-medium transition-all duration-300 hover:scale-110 hover:shadow-md"
+                            onClick={() => handleReEvaluate(submission.id)}
+                            disabled={reEvaluating === submission.id}
                           >
-                            Edit Grade
+                            {reEvaluating === submission.id ? 'Retrying...' : 'Retry'}
                           </button>
                         )}
                       </td>
