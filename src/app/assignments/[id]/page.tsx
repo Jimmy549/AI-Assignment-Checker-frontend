@@ -14,6 +14,7 @@ interface Submission {
   studentRollNumber: string;
   uploadedAt: string;
   isEvaluated: boolean;
+  submissionStatus?: string;
   evaluation?: {
     id: string; // Ensure we have the evaluation ID
     score: number;
